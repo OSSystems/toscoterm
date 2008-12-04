@@ -1,9 +1,17 @@
-all: main.c
+CC		= gcc -Wall
+CFLAGS	= $(shell pkg-config --cflags gtk+-2.0) $(shell pkg-config --cflags vte)
+LDFLAGS	= $(shell pkg-config --libs gtk+-2.0) $(shell pkg-config --libs vte)
+TARGET	= toscoterm
+SOURCES	= main.c
+OBJECTS = $(SOURCES:.c=.o)
 
-main.c:
-	 gcc -o toscoterm $(shell pkg-config --libs --cflags gtk+-2.0) $(shell pkg-config --libs --cflags vte) main.c
+all: $(SOURCES) $(TARGET)
+
+$(TARGET): $(OBJECTS)
+	$(CC) $(LDFLAGS) $(OBJECTS) -o $@
 
 clean:
+	rm -f *.o
 	rm -f toscoterm
 
 install: main.c
