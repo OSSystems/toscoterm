@@ -95,7 +95,7 @@ int main(int argc, char *argv[])
 	vte_terminal_set_size(VTE_TERMINAL(term), 80, 24);
 
 	if (!exec)
-		vte_terminal_fork_command(VTE_TERMINAL(term), g_getenv("SHEEL"), NULL, NULL, ".", FALSE, FALSE, FALSE);
+		vte_terminal_fork_command(VTE_TERMINAL(term), g_getenv("SHELL"), NULL, NULL, ".", FALSE, FALSE, FALSE);
 	else {
 		gchar **command;
 		g_shell_parse_argv(exec, NULL, &command, NULL);
