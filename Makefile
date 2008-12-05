@@ -1,4 +1,4 @@
-CC		= gcc -Wall
+CC      = gcc -Wall -Os
 CFLAGS	= $(shell pkg-config --cflags gtk+-2.0) $(shell pkg-config --cflags vte)
 LDFLAGS	= $(shell pkg-config --libs gtk+-2.0) $(shell pkg-config --libs vte)
 TARGET	= toscoterm
@@ -18,4 +18,3 @@ clean:
 install: main.c
 	install -d $(DESTDIR)$(PREFIX)/bin/
 	install -m 644 toscoterm $(DESTDIR)$(PREFIX)/bin/
-
