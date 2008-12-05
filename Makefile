@@ -17,4 +17,4 @@ clean:
 
 install: main.c
 	install -d $(DESTDIR)$(PREFIX)/bin/
-	install -m 644 toscoterm $(DESTDIR)$(PREFIX)/bin/
+	install -m 755 toscoterm $(DESTDIR)$(PREFIX)/bin/
