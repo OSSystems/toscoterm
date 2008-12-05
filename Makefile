@@ -16,5 +16,6 @@ clean:
 	rm -f toscoterm
 
 install: main.c
+	install -d $(DESTDIR)$(PREFIX)/bin/
 	install -o root -g root -m 644 toscoterm $(DESTDIR)$(PREFIX)/bin/
 
