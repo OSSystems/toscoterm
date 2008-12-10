@@ -62,6 +62,12 @@ static int keypressed_cb(GtkWidget *widget, GdkEventKey *event)
 	return 0;
 }
 
+static gboolean delete_event(GtkWidget *widget)
+{
+	gtk_main_quit();
+	return FALSE;
+}
+
 int main(int argc, char *argv[])
 {
 	gtk_init(&argc, &argv);
@@ -104,6 +110,7 @@ int main(int argc, char *argv[])
 
 	g_signal_connect(term, "child-exited", G_CALLBACK(childexited_cb), NULL);
 	g_signal_connect(main_window, "key-press-event", G_CALLBACK(keypressed_cb), NULL);
+	g_signal_connect(main_window, "delete_event", G_CALLBACK(delete_event), NULL);
 
 	if (fullscreen == 1)
 		gtk_window_fullscreen(GTK_WINDOW(main_window));
