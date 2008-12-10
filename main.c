@@ -116,7 +116,6 @@ int main(int argc, char *argv[])
 		gtk_window_fullscreen(GTK_WINDOW(main_window));
 
 	gtk_widget_show_all(GTK_WIDGET(main_window));
-	gtk_widget_grab_focus(term);
 
 	gtk_main();
 	return 0;
