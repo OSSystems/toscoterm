@@ -1,6 +1,6 @@
 /*
  * ToscoTerm - A very simple and stupid terminal emulator
- * Copyright (C) 2008 O.S. Systems
+ * Copyright (C) 2008, 2009 O.S. Systems Software Ltda.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -89,8 +89,10 @@ int main(int argc, char *argv[])
 	GtkWidget *main_window;
 	if (xid)
 		main_window = gtk_plug_new(xid);
-	else
+	else {
 		main_window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
+		gtk_window_set_title(GTK_WINDOW(main_window), "Terminal");
+	}
 
 	GtkWidget *term = vte_terminal_new();
 	gtk_container_add(GTK_CONTAINER(main_window), term);
