@@ -75,6 +75,7 @@ int main(int argc, char *argv[])
 	guint32 xid = 0;
 	int fullscreen = 0;
 	char *exec = NULL;
+	char *termname = NULL;
 
 	int i;
 	for (i = 0; i < argc; i++) {
@@ -84,6 +85,8 @@ int main(int argc, char *argv[])
 			fullscreen = 1;
 		else if (!strncmp(argv[i], "-e", 2))
 			exec = argv[++i];
+		else if (!strncmp(argv[i], "-t", 2))
+			termname = argv[++i];
 	}
 
 	GtkWidget *main_window;
@@ -99,7 +102,7 @@ int main(int argc, char *argv[])
 
 	set_window_geometry_hints(main_window, VTE_TERMINAL(term));
 
-	vte_terminal_set_emulation(VTE_TERMINAL(term), "xterm");
+	vte_terminal_set_emulation(VTE_TERMINAL(term), termname ? termname : g_getenv("TERM"));
 	vte_terminal_set_size(VTE_TERMINAL(term), 80, 24);
 
 	if (!exec)
