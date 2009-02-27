@@ -102,7 +102,7 @@ int main(int argc, char *argv[])
 
 	set_window_geometry_hints(main_window, VTE_TERMINAL(term));
 
-	vte_terminal_set_emulation(VTE_TERMINAL(term), termname ? termname : g_getenv("TERM"));
+	vte_terminal_set_emulation(VTE_TERMINAL(term), termname ? termname : "xterm");
 	vte_terminal_set_size(VTE_TERMINAL(term), 80, 24);
 
 	if (!exec)
