@@ -68,6 +68,31 @@ static gboolean delete_event(GtkWidget *widget)
 	return FALSE;
 }
 
+static int get_mode_code(const char *md)
+{
+	struct name_code
+	{
+		const char *nm;
+		int cd;
+	} name_code[] = {
+		{ "default", 1 },
+		{ "sun", 2 },
+		{ "hp", 4 },
+		{ "legacy", 8 },
+		{ "vt220", 16 },
+		{ "linux", 32 },
+		{ NULL, 0 },
+	};
+
+	int i;
+	for (i = 0; name_code[i].nm; i++)
+		if (!strcmp(name_code[i].nm, md))
+			return name_code[i].cd;
+
+	// invalid mode
+	return 0;
+}
+
 int main(int argc, char *argv[])
 {
 	gtk_init(&argc, &argv);
@@ -76,6 +101,7 @@ int main(int argc, char *argv[])
 	int fullscreen = 0;
 	char *exec = NULL;
 	char *termname = NULL;
+	char *mode = NULL;
 
 	int i;
 	for (i = 0; i < argc; i++) {
@@ -87,6 +113,8 @@ int main(int argc, char *argv[])
 			exec = argv[++i];
 		else if (!strncmp(argv[i], "-t", 2))
 			termname = argv[++i];
+		else if (!strncmp(argv[i], "-m", 2))
+			mode = argv[++i];
 	}
 
 	GtkWidget *main_window;
@@ -104,6 +132,19 @@ int main(int argc, char *argv[])
 
 	vte_terminal_set_emulation(VTE_TERMINAL(term), termname ? termname : "xterm");
 	vte_terminal_set_size(VTE_TERMINAL(term), 80, 24);
+
+	// set function key mode
+	if (mode) {
+		gchar command[15];
+		int code = get_mode_code(mode);
+		if (code) {
+			sprintf(command, "\e[fkey%dh", code);
+			vte_terminal_feed(VTE_TERMINAL(term), command, -1);
+		} else {
+			g_printerr("Invalid function keys mode: %s\n", mode);
+			return 1;
+		}
+	}
 
 	if (!exec)
 		vte_terminal_fork_command(VTE_TERMINAL(term), g_getenv("SHELL"), NULL, NULL, ".", FALSE, FALSE, FALSE);
