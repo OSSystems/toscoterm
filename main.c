@@ -128,7 +128,7 @@ int main(int argc, char *argv[])
 	guint32 xid = 0;
 	int fullscreen = 0;
 	char *exec = NULL;
-	char *termname = NULL;
+	char *termname = "xterm";
 	char *mode = NULL;
 	int fontsize = 10;
 
@@ -161,8 +161,14 @@ int main(int argc, char *argv[])
 
 	set_window_geometry_hints(main_window, VTE_TERMINAL(term));
 
-	vte_terminal_set_emulation(VTE_TERMINAL(term), termname ? termname : "xterm");
+	vte_terminal_set_emulation(VTE_TERMINAL(term), termname);
 	vte_terminal_set_size(VTE_TERMINAL(term), 80, 24);
+
+	// can't set function key mode if emulation != "xterm"
+	if (mode && (strcmp("xterm", termname) != 0)) {
+		g_printerr("You can't set function key mode (-m) if emulation (-t) is not \'xterm\'\n");
+		return 1;
+	}
 
 	// set function key mode
 	if (mode) {
