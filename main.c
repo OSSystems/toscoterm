@@ -68,6 +68,34 @@ static gboolean delete_event(GtkWidget *widget)
 	return FALSE;
 }
 
+static void set_font_size(VteTerminal *terminal, GtkWidget *window, gint howmuch)
+{
+	PangoFontDescription *desired;
+	gint columns, rows, owidth, oheight;
+
+	/* Read the screen dimensions in cells. */
+	columns = terminal->column_count;
+	rows = terminal->row_count;
+
+	/* Take into account padding and border overhead. */
+	gtk_window_get_size(GTK_WINDOW(window), &owidth, &oheight);
+	owidth -= terminal->char_width * terminal->column_count;
+	oheight -= terminal->char_height * terminal->row_count;
+
+	/* Calculate the new font size. */
+	desired = pango_font_description_copy(vte_terminal_get_font(terminal));
+	pango_font_description_set_size(desired, CLAMP(howmuch, 4, 144) * PANGO_SCALE);
+
+	/* Change the font, then resize the window so that we have the same
+	 * number of rows and columns. */
+	vte_terminal_set_font(terminal, desired);
+	gtk_window_resize(GTK_WINDOW(window),
+			  columns * terminal->char_width + owidth,
+			  rows * terminal->char_height + oheight);
+
+	pango_font_description_free(desired);
+}
+
 static int get_mode_code(const char *md)
 {
 	struct name_code
@@ -102,6 +130,7 @@ int main(int argc, char *argv[])
 	char *exec = NULL;
 	char *termname = NULL;
 	char *mode = NULL;
+	int fontsize = 10;
 
 	int i;
 	for (i = 0; i < argc; i++) {
@@ -115,6 +144,8 @@ int main(int argc, char *argv[])
 			termname = argv[++i];
 		else if (!strncmp(argv[i], "-m", 2))
 			mode = argv[++i];
+		else if (!strncmp(argv[i], "-F", 2))
+			fontsize = atoi(argv[++i]);
 	}
 
 	GtkWidget *main_window;
@@ -162,6 +193,9 @@ int main(int argc, char *argv[])
 		gtk_window_fullscreen(GTK_WINDOW(main_window));
 
 	gtk_widget_show_all(GTK_WIDGET(main_window));
+
+	// must be called after show
+	set_font_size(VTE_TERMINAL(term), main_window, fontsize);
 
 	gtk_main();
 	return 0;
