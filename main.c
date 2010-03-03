@@ -131,6 +131,7 @@ int main(int argc, char *argv[])
 	char *termname = "xterm";
 	char *mode = NULL;
 	int fontsize = 10;
+	char *encoding = NULL;
 
 	int i;
 	for (i = 0; i < argc; i++) {
@@ -146,6 +147,8 @@ int main(int argc, char *argv[])
 			mode = argv[++i];
 		else if (!strncmp(argv[i], "-F", 2))
 			fontsize = atoi(argv[++i]);
+		else if (!strncmp(argv[i], "-c", 2))
+			encoding = argv[++i];
 	}
 
 	GtkWidget *main_window;
@@ -182,6 +185,9 @@ int main(int argc, char *argv[])
 			return 1;
 		}
 	}
+
+	if (encoding)
+		vte_terminal_set_encoding(VTE_TERMINAL(term), encoding);
 
 	if (!exec)
 		vte_terminal_fork_command(VTE_TERMINAL(term), g_getenv("SHELL"), NULL, NULL, ".", FALSE, FALSE, FALSE);
