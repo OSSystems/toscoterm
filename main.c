@@ -16,8 +16,18 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+/* Exit codes
+
+   0: success
+   1: invalid options
+   2: bad command (-e)
+*/
+
 #include <stdlib.h>
 #include <string.h>
+
+#include <sys/types.h>
+#include <sys/wait.h>
 
 #include <gdk/gdkkeysyms.h>
 #include <gtk/gtk.h>
@@ -44,7 +54,11 @@ static void set_window_geometry_hints(GtkWidget *window, VteTerminal *term)
 
 static void childexited_cb(VteTerminal *term)
 {
-	gtk_exit(0);
+	/* Get the status, not yet the exit code */
+	int child_status = vte_terminal_get_child_exit_status(term);
+
+	/* Extracts the child process’s exit code, using it as the application exit code */
+	gtk_exit(WEXITSTATUS(child_status));
 }
 
 static int keypressed_cb(GtkWidget *widget, GdkEventKey *event)
@@ -194,7 +208,13 @@ int main(int argc, char *argv[])
 	else {
 		gchar **command;
 		g_shell_parse_argv(exec, NULL, &command, NULL);
-		vte_terminal_fork_command(VTE_TERMINAL(term), (const char *)*(command), command, NULL, ".", FALSE, FALSE, FALSE);
+		pid_t pid = vte_terminal_fork_command(VTE_TERMINAL(term), (const char *)*(command),
+						command, NULL, ".", FALSE, FALSE, FALSE);
+
+		if (pid < 0) {
+			g_printerr("Could not execute command \'%s\'. Aborting...\n", (const char *)*command);
+			return 2;
+		}
 	}
 
 	g_signal_connect(term, "child-exited", G_CALLBACK(childexited_cb), NULL);
