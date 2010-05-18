@@ -146,6 +146,7 @@ int main(int argc, char *argv[])
 	char *mode = NULL;
 	int fontsize = 10;
 	char *encoding = NULL;
+	char *title = "Terminal";
 
 	int i;
 	for (i = 0; i < argc; i++) {
@@ -163,6 +164,8 @@ int main(int argc, char *argv[])
 			fontsize = atoi(argv[++i]);
 		else if (!strncmp(argv[i], "-c", 2))
 			encoding = argv[++i];
+		else if (!strncmp(argv[i], "-w", 2))
+			title = argv[++i];
 	}
 
 	GtkWidget *main_window;
@@ -170,7 +173,7 @@ int main(int argc, char *argv[])
 		main_window = gtk_plug_new(xid);
 	else {
 		main_window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
-		gtk_window_set_title(GTK_WINDOW(main_window), "Terminal");
+		gtk_window_set_title(GTK_WINDOW(main_window), title);
 	}
 
 	GtkWidget *term = vte_terminal_new();
