@@ -172,8 +172,15 @@ int main(int argc, char *argv[])
 	if (xid)
 		main_window = gtk_plug_new(xid);
 	else {
+		char *icon_path = "icon.png";
+		GFileTest test = G_FILE_TEST_EXISTS;
+
+		if (!g_file_test(icon_path, test))
+			icon_path = "/usr/share/toscoterm/icon.png";
+
 		main_window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
 		gtk_window_set_title(GTK_WINDOW(main_window), title);
+		gtk_window_set_default_icon_from_file(icon_path, NULL);
 	}
 
 	GtkWidget *term = vte_terminal_new();

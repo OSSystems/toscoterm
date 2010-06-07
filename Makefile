@@ -18,3 +18,5 @@ clean:
 install: main.c
 	install -d $(DESTDIR)$(PREFIX)/bin/
 	install -m 755 toscoterm $(DESTDIR)$(PREFIX)/bin/
+	install -d $(DESTDIR)$(PREFIX)/share/toscoterm/
+	install -m 644 icon.png $(DESTDIR)$(PREFIX)/share/toscoterm/
