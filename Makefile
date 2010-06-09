@@ -15,7 +15,7 @@ clean:
 	rm -f *.o
 	rm -f toscoterm
 
-install: main.c
+install: all
 	install -d $(DESTDIR)$(PREFIX)/bin/
 	install -m 755 toscoterm $(DESTDIR)$(PREFIX)/bin/
 	install -d $(DESTDIR)$(PREFIX)/share/toscoterm/
