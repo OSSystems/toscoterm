@@ -1,0 +1,12 @@
+A very simple, small and trivial terminal emulator. It fits very well
+for embedded environments.
+
+While working at O.S. Systems embedded platform we ended up requiring
+few features not found in any lightwise terminal.
+
+It is currently very light and provides the following features:
+
+* XEmbed
+* full screen
+* specific start command
+* terminal window resize
